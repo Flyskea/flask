@@ -23,12 +23,12 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <li><a href="{{ url_for('main.index') }}">首页</a></li>
+            <li class="{% block activate %}{% endblock %}"><a href="{{ url_for('main.index') }}">首页</a></li>
             {% if current_user.can(Permission.MODERATE) %}
-                <li><a href="{{ url_for('main.moderate') }}">管理评论</a></li>
+                <li class="{% block moder_activate %}{% endblock %}"><a href="{{ url_for('main.moderate') }}">管理评论</a></li>
             {% endif %}
             {% if current_user.is_administrator() %}
-                <li>
+                <li class="{% block admin_activate %}{% endblock %}">
                     <a href="{{ url_for('main.manageuser') }}">
                     管理用户[Admin]
                     </a>
