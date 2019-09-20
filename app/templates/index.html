@@ -1,41 +1,33 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% import "_macros.html" as macros %}
 
-{% block title %}Flyskea{% endblock %}
-{% block activate %}active{% endblock %}
+{% block title %}Flyskea|登录{% endblock %}
+
 {% block page_content %}
-<div class="page-header">
-    <h1>Hello, 
-        {% if current_user.is_authenticated %}
-            {{ current_user.username }}！
-        {% else %}
-        Stranger！
-        <p>你需要登录来撰写博客</p>
-        {% endif %}</h1>
+<div class="container">
+    <div class="row">
+        <div class="jumbotron" style="background:url(static/3.png);">
+            <h2 style="text-align: center">{{ response_dict.content }}</h2>
+            <p style="text-align: right">——{{ response_dict.author }}《{{ response_dict.origin }}》</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            {% if current_user.is_administrator() %}
+            {{ wtf.quick_form(form) }}
+            {% endif %}
+            {% if posts.body_html %}
+                {{ posts.body_html | safe }}
+            {% else %}
+                {{ posts.body }}
+            {% endif %}
+        </div>
+        <div class="col-md-offset-10">
+            <h4 class="font-italic">Elsewhere</h4>
+            <ol class="list-unstyled">
+                <li><a href="https://github.com/Flyskea">github</a></li>
+            </ol>
+        </div>
+    </div>
 </div>
-<div>
-    {% if current_user.can(Permission.WRITE) %}
-    {{ wtf.quick_form(form) }}
-    {% endif %}
-</div>
-<div class="post-tabs">
-    <ul class="nav nav-tabs">
-        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">全部博文</a></li>
-        {% if current_user.is_authenticated %}
-        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">关注的人的博文</a></li>
-        {% endif %}
-    </ul>
-    {% include '_posts.html' %}
-</div>
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.index') }}
-</div>
-{% endif %}
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-{{ pagedown.include_pagedown() }}
 {% endblock %}

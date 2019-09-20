@@ -8,6 +8,7 @@ from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
 from config import Config
 from flask_sqlalchemy import get_debug_queries
+import requests
 
 @main.after_app_request
 def after_request(response):
@@ -31,6 +32,22 @@ def server_shutdown():
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    url = 'https://api.gushi.ci/all.json'
+    r = requests.get(url)
+    response_dict = r.json()
+    form = PostForm()
+    if current_user.is_administrator() and form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.index'))
+    posts = Post.query.filter_by(author_id=101).first_or_404()
+    return render_template('index.html', response_dict=response_dict, posts=posts, form=form)
+
+
+@main.route('/posts', methods=['GET', 'POST'])
+def posts():
     form = PostForm()
     if current_user.can(Permission.WRITE) and form.validate_on_submit():
         post = Post(body=form.body.data,
@@ -50,7 +67,7 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts,
+    return render_template('posts.html', form=form, posts=posts,
                             show_followed=show_followed, pagination=pagination)
 
 @main.route('/user/<username>')
