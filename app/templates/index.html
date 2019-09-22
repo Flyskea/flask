@@ -1,33 +1,53 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Flyskea|登录{% endblock %}
+{% block title %}Flyskea|首页{% endblock %}
+
+{% block activate %}active{% endblock %}
 
 {% block page_content %}
 <div class="container">
     <div class="row">
-        <div class="jumbotron" style="background:url(static/3.png);">
-            <h2 style="text-align: center">{{ response_dict.content }}</h2>
-            <p style="text-align: right">——{{ response_dict.author }}《{{ response_dict.origin }}》</p>
+        <div class="col-md-12">
+            <div class="jumbotron" style="background:url(static/3.png);">
+                <h2 style="text-align: center">{{ response_dict.content }}</h2>
+                <p style="text-align: right">——{{ response_dict.author }}《{{ response_dict.origin }}》</p>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            {% if current_user.is_administrator() %}
-            {{ wtf.quick_form(form) }}
-            {% endif %}
+        <div class="col-md-9">
             {% if posts.body_html %}
                 {{ posts.body_html | safe }}
             {% else %}
                 {{ posts.body }}
             {% endif %}
         </div>
-        <div class="col-md-offset-10">
-            <h4 class="font-italic">Elsewhere</h4>
-            <ol class="list-unstyled">
-                <li><a href="https://github.com/Flyskea">github</a></li>
-            </ol>
+        <div class="col-xs-10 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="font-italic">关于我们</h4>
+                </div>
+                <div class="panel-body">
+                    <ol class="list-unstyled">
+                        <li style="text-align: center"><a href="https://github.com/Flyskea">github</a></li>
+                    </ol>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<footer class="blog-footer">
+    <p>
+        <h5>Made by Flyskea |
+            Based on
+                <a href="https://www.bootcss.com/">Bootstrap</a>
+        </h5>
+        <a href="https://weibo.com/p/1005055906196688/home?from=page_100505&mod=TAB#place">
+            @新浪微博
+        </a>
+        <span>|</span>
+        <a href="https://twitter.com/Flyskea2">@Twitter</a>
+    </p>
+</footer>
 {% endblock %}

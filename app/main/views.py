@@ -35,15 +35,8 @@ def index():
     url = 'https://api.gushi.ci/all.json'
     r = requests.get(url)
     response_dict = r.json()
-    form = PostForm()
-    if current_user.is_administrator() and form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.index'))
     posts = Post.query.filter_by(author_id=101).first_or_404()
-    return render_template('index.html', response_dict=response_dict, posts=posts, form=form)
+    return render_template('index.html', response_dict=response_dict, posts=posts)
 
 
 @main.route('/posts', methods=['GET', 'POST'])
